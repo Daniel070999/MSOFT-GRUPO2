@@ -2,6 +2,7 @@ import { useState } from "react";
 import { logout, unEnrollUser, verifyIfUserIsEnrolled } from "../../firebase/authentication";
 import CreateMultiFactorAuthentication from "./CreateMultiFactorAuthentication";
 import { auth } from "../../firebase/firebase";
+import ApiC from "../api/ApiC";
 
 function UserC({ currentUser }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -46,7 +47,7 @@ function UserC({ currentUser }) {
                         </div>
 
                     </>) : (<>
-                        <p>¿Cancelar 2FA en este dispositivo?</p>
+                        <p>¿Cancelar 2FA?</p>
                         <button onClick={() => savePhoneNoMFA()} className="button-30">Cancelar 2FA</button>
                     </>)
             }
@@ -54,6 +55,8 @@ function UserC({ currentUser }) {
                 isChecked &&
                 < CreateMultiFactorAuthentication currentUser={auth.currentUser} />
             }
+            <hr />
+            <ApiC />
         </section>
     );
 }
