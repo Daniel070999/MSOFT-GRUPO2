@@ -1,0 +1,22 @@
+version: '3'
+services:
+  app-instance1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "8080"  # Puerto interno
+
+  app-instance2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "8080"  # Puerto interno
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"  # Puerto público

@@ -1,0 +1,15 @@
+ec\edu\ups\service\IVirusService.class
+ec\edu\ups\model\InformationRequest.class
+ec\edu\ups\model\RequestUrlDTO.class
+ec\edu\ups\SeguridadVirusTotalApplication.class
+ec\edu\ups\service\impl\VirusServiceImpl.class
+ec\edu\ups\service\impl\ScanServiceImpl.class
+ec\edu\ups\controller\FireBaseController.class
+ec\edu\ups\controller\VirusTotalController.class
+ec\edu\ups\configuration\FirebaseConfig.class
+ec\edu\ups\service\IScanService.class
+ec\edu\ups\service\IMyFirebaseService.class
+ec\edu\ups\utils\Util.class
+ec\edu\ups\entity\FirebaseUser.class
+ec\edu\ups\restclient\VirusTotalClient.class
+ec\edu\ups\service\impl\MyFirebaseServiceImpl.class
