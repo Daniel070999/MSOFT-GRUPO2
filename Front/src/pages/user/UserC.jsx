@@ -10,7 +10,6 @@ function UserC({ currentUser }) {
     const handleCheckboxChange = () => {
         setIsChecked(!isChecked);
     };
-    console.log(currentUser);
 
     const savePhoneNoMFA = async () => {
         const savePhone = await unEnrollUser(currentUser);
