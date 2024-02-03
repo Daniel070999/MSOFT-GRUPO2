@@ -2,8 +2,12 @@ package ec.edu.ups.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,6 +15,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class Util {
 
@@ -47,5 +52,18 @@ public class Util {
             throw new RuntimeException("ERROR AL CONVERTIR DE STRING A MAPA" + e.getMessage());
         }
 
+    }
+
+    public File convertMultipartFileToFile(MultipartFile multipartFile) {
+        try {
+            File file = new File(multipartFile.getOriginalFilename());
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(multipartFile.getBytes());
+            fos.close();
+            return file;
+        } catch (Exception e) {
+            log.error("ERROR AL CONVERTIR UN MULTIPARTFILE EN FILE: {}", e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
