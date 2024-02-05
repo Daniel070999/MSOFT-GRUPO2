@@ -23,8 +23,6 @@ function Home() {
         <button className="button-30" onClick={() => iniciarSesion()}>Iniciar Sesión</button>
         <button className="button-30" onClick={() => registrarse()}>Registrarse</button>
       </div>
-
-
     </section>
   );
 }

@@ -7,19 +7,23 @@ function ApiC() {
     const [data, setData] = useState();
     const [generalData, setGeneralData] = useState();
 
+    /**
+     * Método que sirve para obtener el response del backend
+     * @param {*} url Url del endpoint a consumir
+     * @param {*} body Body del form a consumir
+     * @returns 
+     */
     const makeRequest = async (url, body) => {
         try {
             const myHeaders = new Headers({
                 "Content-Type": "application/json",
             });
-
             const requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body),
                 redirect: 'follow',
             };
-
             const response = await fetch(url, requestOptions);
             const result = await response.text();
             return result;
@@ -28,11 +32,17 @@ function ApiC() {
         }
     };
 
+    /**
+     * Método que cierra el modal en el cual se presenta la información
+     */
     const closeModal = () => {
         var modal = document.getElementById("myModal");
         modal.style.display = "none";
     };
 
+    /**
+     * Método que sirve para manejar la validación de URL
+     */
     const validateURL = async () => {
         const urlForm = validarURL.current.value;
         if (!urlForm) {
@@ -59,6 +69,9 @@ function ApiC() {
 
     };
 
+    /**
+     * Método que sirve para manejar la validación de IP
+     */
     const validateIP = async () => {
         const IPForm = validarIP.current.value;
         if (!IPForm) {
@@ -87,15 +100,52 @@ function ApiC() {
         }
     };
 
+    /**
+     * Método que sirve para validar los archivos
+     */
     const validateFile = () => {
         const fileForm = validarArchivo.current.files[0];
         if (!fileForm) {
             alert('Debe subir un archivo');
             return;
         }
-        console.log(fileForm);
+        const maxSizeInBytes = 10 * 1024 * 1024;
+        if (fileForm.size > maxSizeInBytes) {
+            alert('El archivo no debe ser mayor a 10MB');
+            return;
+        }
+        var formdata = new FormData();
+        formdata.append("file", fileForm);
+        var requestOptions = {
+            method: 'POST',
+            body: formdata,
+            redirect: 'follow',
+        };
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+        setData();
+        setGeneralData();
+        let formattedData;
+        try {
+            fetch("http://localhost:8081/scan/file", requestOptions)
+                .then(response => response.text())
+                .then(result => {
+                    const jsonData = JSON.parse(result);
+                    formattedData = Object.entries(jsonData.data.attributes.stats)
+                        .map(([key, value]) => `${key}: ${value}`)
+                        .join('\n');
+                    setGeneralData(result);
+                    setData(formattedData);
+                })
+                .catch(error => console.log('error', error));
+        } catch (error) {
+            setData('Archivo no válido');
+        }
     };
 
+    /**
+     * Método que sirve para descargar todo el contenido consultado de la verificación
+     */
     const downloadData = () => {
         const currentDate = new Date();
         const formattedDate = currentDate
@@ -118,9 +168,6 @@ function ApiC() {
 
         URL.revokeObjectURL(url);
     };
-
-
-
 
     return (
         <>
@@ -175,20 +222,16 @@ function ApiC() {
                             {data.split('\n').map((line, index) => (
                                 <div key={index}>{line}</div>
                             ))}
-
                             {generalData ? (
                                 <>
                                     Ver información completa: &nbsp;
                                     <button className="button-30" onClick={downloadData}>Descargar</button>
                                 </>
                             ) : (<></>)}
-
                         </div>
                     )}
                 </div>
             </div>
-
-
         </>
     );
 }
