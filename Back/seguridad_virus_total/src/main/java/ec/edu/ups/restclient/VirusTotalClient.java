@@ -21,7 +21,13 @@ public class VirusTotalClient {
     @Value("${api.virus.total}")
     private String apiVirusTotal;
 
-    public String sendPostRequest(String body) {
+    /**
+     * Envia a virus total la peticion de analisis de una url
+     *
+     * @param body peticion en formato Json
+     * @return String response en formato json
+     */
+    public String sendUrlScanRequest(String body) {
 
         DefaultAsyncHttpClientConfig.Builder clientConfigBuilder = new DefaultAsyncHttpClientConfig.Builder();
         try (AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient(clientConfigBuilder.build())) {
@@ -45,13 +51,21 @@ public class VirusTotalClient {
 
     }
 
-    public String sendGetRequest(String newUrl) {
-
+    /**
+     * Envia a virus total la peticion de analisis de un archivo
+     *
+     * @param file archivo que se va a analizar
+     * @return String response en formato json
+     */
+    public String sendFileScanRequest(File file) {
         DefaultAsyncHttpClientConfig.Builder clientConfigBuilder = new DefaultAsyncHttpClientConfig.Builder();
-
         try (AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient(clientConfigBuilder.build())) {
-            BoundRequestBuilder requestBuilder = asyncHttpClient.prepareGet(newUrl);
+
+            BoundRequestBuilder requestBuilder = asyncHttpClient.preparePost(apiVirusTotal.concat("files"));
+            requestBuilder.setHeader("Content-Type", "multipart/form-data");
             requestBuilder.setHeader("x-apikey", apiKey);
+
+            requestBuilder.addBodyPart(new FilePart("file", file));
 
             CompletableFuture<Response> responseFuture = requestBuilder.execute().toCompletableFuture();
 
@@ -67,15 +81,19 @@ public class VirusTotalClient {
 
     }
 
-    public String sendFile(File file) {
+    /**
+     * Este metodo se encarga de solicitar la respuesta del analisis de una url o un archivo
+     *
+     * @param newUrl url a donde se debe enviar la peticion
+     * @return String esponse en formato Json
+     */
+    public String sendResponseRequest(String newUrl) {
+
         DefaultAsyncHttpClientConfig.Builder clientConfigBuilder = new DefaultAsyncHttpClientConfig.Builder();
+
         try (AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient(clientConfigBuilder.build())) {
-
-            BoundRequestBuilder requestBuilder = asyncHttpClient.preparePost(apiVirusTotal.concat("files"));
-            requestBuilder.setHeader("Content-Type", "multipart/form-data");
+            BoundRequestBuilder requestBuilder = asyncHttpClient.prepareGet(newUrl);
             requestBuilder.setHeader("x-apikey", apiKey);
-
-            requestBuilder.addBodyPart(new FilePart("file", file));
 
             CompletableFuture<Response> responseFuture = requestBuilder.execute().toCompletableFuture();
 
